@@ -1,0 +1,4 @@
+#Reference for seasonal stats
+
+{'slug': 'achiupr01', 'name': 'Precious Achiuwa', 'positions': [<Position.CENTER: 'CENTER'>], 'age': 22, 'team': <Team.TORONTO_RAPTORS: 'TORONTO RAPTORS'>, 'games_played': 37, 'games_started': 22, 'minutes_played': 923, 'made_field_goals': 119, 'attempted_field_goals': 289, 'made_three_point_field_goals': 11, 'attempted_three_point_field_goals': 46, 'made_free_throws': 35, 'attempted_free_throws': 63, 'offensive_rebounds': 86, 'defensive_rebounds': 190, 'assists': 46, 'steals': 21, 'blocks': 22, 'turnovers': 39, 'personal_fouls': 78, 'points': 284}
+
