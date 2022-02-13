@@ -2,11 +2,11 @@ from basketball_reference_web_scraper import client as bclient
 from collections import defaultdict
 import mysql.connector
 
-db = mysql.connector.connect(
-  host = "localhost",
-  user = "root",
-  passwd = "server343s"
-)
+# db = mysql.connector.connect(
+#   host = "localhost",
+#   user = "root",
+#   passwd = "server343s"
+# )
 
 #adding stats to database
 stdict = defaultdict(dict)
