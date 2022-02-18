@@ -1,6 +1,6 @@
 from basketball_reference_web_scraper import client as bclient
 from collections import defaultdict
-import mysql.connector
+# import mysql.connector
 
 # db = mysql.connector.connect(
 #   host = "localhost",

@@ -187,13 +187,6 @@ async def search(ctx,*inp,year = 2022):
     
     await ctx.send(embed = thing)
 
-@client.command(brief = "Our mascot!")
-async def mascot(ctx):
-    thing = discord.Embed()
-    thing.set_image(url = "https://cdn.discordapp.com/attachments/541430300790620181/937539923106476072/basketball2.png")
-    thing.colour = discord.Colour.orange()
-    thing.set_footer(text = "Credit: Loach Fish")
-    await ctx.send(embed = thing)
 client.add_listener(on_ready)
 client.add_listener(on_message)
 keep_alive()
