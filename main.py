@@ -23,6 +23,7 @@ HEADERS = headers = {
 intents = discord.Intents.default()
 intents.members = True
 client = commands.Bot("-", case_insensitive = True, brief = "A bot that gets basketball statistic", strip_after_prefix = True,  intents=intents)
+os.environ['TOKEN'] = 'OTM2Njg5NTEyNzExNTk4MTIx.YfQ2Fg.BbeLQc_eG6DMCiQ5YKkfHqaVWA8'
 token = os.environ['TOKEN']
 
 async def on_ready():
