@@ -14,17 +14,20 @@ from basketball_reference_web_scraper import client as bclient
 # from basketball_reference_web_scraper.data import OutputType
 import basketball_reference_web_scraper
 from data_processing import stdict, calculate_stats, astdict
+from bs4 import BeautifulSoup
+import requests
 
 HEADERS = headers = {
             'x-rapidapi-host': "nba-stats4.p.rapidapi.com",
             'x-rapidapi-key': "3a84732a7fmsh09a7778c123c61ap145571jsn4e31058e61d1"
             }
 
+
+token = 'OTM2Njg5NTEyNzExNTk4MTIx.YfQ2Fg.nN7IHY69q4dIqaG-nKE9CntFNWQ'
+
 intents = discord.Intents.default()
 intents.members = True
 client = commands.Bot("-", case_insensitive = True, brief = "A bot that gets basketball statistic", strip_after_prefix = True,  intents=intents)
-os.environ['TOKEN'] = 'OTM2Njg5NTEyNzExNTk4MTIx.YfQ2Fg.BbeLQc_eG6DMCiQ5YKkfHqaVWA8'
-token = os.environ['TOKEN']
 
 async def on_ready():
     await client.change_presence(activity = discord.Game(name = "Westbrick construction simulator", type = "playing"))
@@ -82,10 +85,16 @@ async def stats(ctx,*name):
     year = 2022
     results = bclient.search(term = " ".join(name))
     if len(results['players']) == 0:
-        await ctx.send(f" **{' '.join(name)}** not found in basketball reference database")
+        e = discord.Embed()
+        e.add_field(name = "Error", value = f" **{' '.join(name)}** not found in basketball reference database")
+        e.color = discord.Colour.orange()
+        await ctx.send(embed = e)
         return
     if results['players'][0]['name'].lower() not in stdict[year].keys():
-        await ctx.send(f" **{results['players'][0]['name']}** has no games played in the {year-1}-{year} nba season.")
+        e = discord.Embed()
+        e.add_field(name = "Error", value = f" **{results['players'][0]['name']}** has no games played in the {year-1}-{year} nba season.")
+        e.color = discord.Colour.orange()
+        await ctx.send(embed = e)
         return
     
     #getting info for normal stats
@@ -94,7 +103,9 @@ async def stats(ctx,*name):
     regular_embed = discord.Embed(title=f"Stats for {player['name']}")
     regular_embed.colour = discord.Colour.orange()
     regular_embed.url = f"https://www.basketball-reference.com/players/{player['slug'][0]}/{player['slug']}.html"
-    regular_embed.set_thumbnail(url="https://a.espncdn.com/combiner/i?img=/i/headshots/nba/players/full/4431688.png")
+    player_pic = BeautifulSoup(requests.get(regular_embed.url).content,'html5lib').findAll('img')[1]['src']
+    regular_embed.set_thumbnail(url=player_pic)
+    print(player_pic[:-3])
     regular_embed.add_field(name = f"{year-1}-{year} Stats",
     value = "Games Played: **{}**\nPpg: **{}**\nApg: **{}**\nRpg: **{}**\nSpg: **{}**\nBpg: **{}**\nTOpg: **{}**\nFpg: **{}**\nFG: **{}%**\n3P: **{}%**\nFT: **{}%**".format(player['games_played'],stats['ppg'],stats['apg'],stats['rpg'],stats['spg'],stats['bpg'],stats['topg'],stats['fpg'],stats['fgp'],stats['3pp'],stats['ftp']),inline= False)
     regular_embed.set_footer(text = "Stats provided by basketball-reference.com", icon_url = "https://d2p3bygnnzw9w3.cloudfront.net/req/202201141/logos/bbr-logo.svg")
@@ -104,7 +115,7 @@ async def stats(ctx,*name):
     advanced_embed = discord.Embed(title=f"Advanced Stats for {player1['name']}")
     advanced_embed.colour = discord.Colour.orange()
     advanced_embed.url = f"https://www.basketball-reference.com/players/{player1['slug'][0]}/{player1['slug']}.html"
-    advanced_embed.set_thumbnail(url="https://a.espncdn.com/combiner/i?img=/i/headshots/nba/players/full/4431688.png")
+    advanced_embed.set_thumbnail(url=player_pic)
     advanced_embed.set_footer(text = "Stats provided by basketball-reference.com", icon_url = "https://d2p3bygnnzw9w3.cloudfront.net/req/202201141/logos/bbr-logo.svg")
     advanced_embed.add_field(name = "2021-2022 Stats",
     value = "\n".join([f"{k.replace('_',' ')}: **{v}**" for k,v in player1.items()][5:]))
@@ -125,6 +136,23 @@ async def stats(ctx,*name):
     view.add_item(button2)
     await ctx.send(embed=regular_embed, view = view)
 
+@client.command(brief = "Gets a mugshot of ur favorite nba player", aliases = ['ms'])
+async def mugshot(ctx,*name):
+    results = bclient.search(term = " ".join(name))
+    if len(results['players']) == 0:
+        e = discord.Embed()
+        e.add_field(name = "Error", value = f" **{' '.join(name)}** not found in basketball reference database")
+        e.color = discord.Colour.orange()
+        await ctx.send(embed = e)
+        return
+    
+    player = results['players'][0]
+    e = discord.Embed()
+    e.title = f"Mugshot for {player['name']}"
+    e.colour = discord.Colour.orange()
+    e.url = f"https://www.basketball-reference.com/players/{player['identifier'][0]}/{player['identifier']}.html"
+    e.set_image(url = BeautifulSoup(requests.get(e.url).content,'html5lib').findAll('img')[1]['src'])
+    await ctx.send(embed = e)
 
 @client.command(brief = "Displays Standings for certain year")
 async def standings(ctx,year = 2022):
