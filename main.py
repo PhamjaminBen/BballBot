@@ -1,6 +1,6 @@
 import os
 import discord
-from keep_alive import keep_alive
+# from keep_alive import keep_alive
 # import nba_api
 import requests
 # from nba_api.stats.static import players
@@ -219,5 +219,5 @@ async def search(ctx,*inp,year = 2022):
 
 client.add_listener(on_ready)
 client.add_listener(on_message)
-keep_alive()
+# keep_alive()
 client.run(token+token2)
