@@ -23,7 +23,8 @@ HEADERS = headers = {
             }
 
 
-token = 'OTM2Njg5NTEyNzExNTk4MTIx.YfQ2Fg.nN7IHY69q4dIqaG-nKE9CntFNWQ'
+token = 'OTM2Njg5NTEyNzExNTk4MTIx.YfQ2Fg.'
+token2 = 'FWMn5TLP5sfCBKHBsgTt5ccUsM8'
 
 intents = discord.Intents.default()
 intents.members = True
@@ -219,4 +220,4 @@ async def search(ctx,*inp,year = 2022):
 client.add_listener(on_ready)
 client.add_listener(on_message)
 keep_alive()
-client.run(token)
+client.run(token+token2)
