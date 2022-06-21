@@ -20,13 +20,14 @@ from bs4 import BeautifulSoup
 import requests
 import random
 from dataclasses import dataclass
+import sqlite3
 
 # HEADERS = headers = {
 #             'x-rapidapi-host': "nba-stats4.p.rapidapi.com",
 #             'x-rapidapi-key': "3a84732a7fmsh09a7778c123c61ap145571jsn4e31058e61d1"
 #             }
 
-sl = ["704377057529954397","949595930523471942","732794738318639125"]
+sl = ["704377057529954397","732794738318639125"]
 logging.basicConfig(level=logging.INFO)
 
 token = 'OTM2Njg5NTEyNzExNTk4MTIx.YfQ2Fg.og_mynJAYsMTf8xAZQhhIv1zW6w'
