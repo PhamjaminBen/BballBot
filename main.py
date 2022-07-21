@@ -21,6 +21,7 @@ import requests
 import random
 from dataclasses import dataclass
 import sqlite3
+import difflib
 
 # HEADERS = headers = {
 #             'x-rapidapi-host': "nba-stats4.p.rapidapi.com",
@@ -35,6 +36,12 @@ token = 'OTM2Njg5NTEyNzExNTk4MTIx.YfQ2Fg.og_mynJAYsMTf8xAZQhhIv1zW6w'
 intents = discord.Intents.all()
 intents.members = True
 client = commands.Bot(command_prefix="-", intents = intents)
+
+#accesing the db
+connection = sqlite3.connect('nba_sql.db')
+db_cursor = connection.cursor()
+db_cursor.execute("SELECT player_name from player")
+players = [x[0] for x in db_cursor.fetchall()]
 
 @client.event
 async def on_ready():
@@ -90,6 +97,42 @@ async def on_message(m: discord.Message):
 
 
 @client.slash_command(guild_ids = sl,description = "Shows the stats for a certain player and year")
+async def stats2(
+  ctx: discord.ApplicationContext,
+  name: discord.Option(str,"Name of player")
+  ):
+    #finding closest match to the player
+    results = difflib.get_close_matches(name,players)
+
+    #if close match is not found, send error
+    if len(results) == 0:
+      e = discord.Embed(colour= discord.Colour.orange())
+      e.add_field(name = "Error", value = f" **{name}** not found in 2021-2022 database")
+      await ctx.respond(embed = e)
+      return
+    
+    #getting info for stats
+    name = results[0]
+    db_cursor.execute(f"""SELECT bbref_id,player_name,ppg,apg,rpg,spg,bpg,topg, fg_pct,fg3_pct,ft_pct,gp
+    FROM player NATURAL JOIN player_general_traditional_total
+    WHERE player_name = \"{name}\";""")
+    data = db_cursor.fetchall()[0]
+    bbref_id = data[0]
+    regular_embed = discord.Embed(
+      title=f"Stats for {name}",
+      colour = discord.Colour.orange(),
+      url = f"https://www.basketball-reference.com/players/{data[0][0]}/{data[0]}.html")
+    regular_embed.set_thumbnail(url = f"https://www.basketball-reference.com/req/202106291/images/players/{data[0]}.jpg")
+    regular_embed.set_footer(text = "Stats provided by basketball-reference.com", icon_url = "https://d2p3bygnnzw9w3.cloudfront.net/req/202201141/logos/bbr-logo.svg")
+    regular_embed.add_field(name = f"2021-2022 Stats",
+    value = f"Games Played: **{data[11]}**\nPpg: **{round(data[2],1)}**\nApg: **{round(data[3],1)}**\nRpg: **{round(data[4],1)}**\nSpg: **{round(data[5],1)}**\nBpg: **{round(data[6],1)}**\nTOpg: **{round(data[7],1)}**\nFG: **{round(data[8]*100,1)}%**\n3P: **{round(data[9]*100,1)}%**\nFT: **{round(data[10]*100,1)}%**")
+    await ctx.respond(embed=regular_embed)
+
+
+    
+
+
+@client.slash_command(guild_ids = sl,description = "Shows the stats for a certain player and year")
 async def stats(
   ctx:  discord.ApplicationContext,
   name: discord.Option(str, "Name of the player")
@@ -97,9 +140,8 @@ async def stats(
     year = 2022
     results = bclient.search(term = name)
     if len(results['players']) == 0:
-        e = discord.Embed()
+        e = discord.Embed(colour= discord.Colour.orange())
         e.add_field(name = "Error", value = f" **{name}** not found in basketball reference database")
-        e.color = discord.Colour.orange()
         await ctx.respond(embed = e)
         return
     if results['players'][0]['name'].lower() not in stdict[year].keys():
@@ -147,6 +189,8 @@ async def stats(
     view.add_item(button1)
     view.add_item(button2)
     await ctx.respond(embed=regular_embed, view = view)
+
+
 
 @client.slash_command(guild_ids = sl,description = "Shows the mugshot for a certain player")
 async def mugshot(
@@ -218,6 +262,46 @@ async def standings(
   except basketball_reference_web_scraper.errors.InvalidSeason:
       await ctx.respond("Standings for season not available")
 
+@client.slash_command(guild_ids = sl,description = "Displays standings for a certain year")
+async def standings2(ctx:  discord.ApplicationContext):
+    db_cursor.execute("SELECT city,nickname,w,l from team where conference = \"Eastern\" order by w desc")
+    east_text = ""
+    for i,x in enumerate(db_cursor.fetchall()):
+      east_text += f"**{i+1}. {x[0]} {x[1]}** Record: **{x[2]}-{x[3]}**\n"
+
+    db_cursor.execute("SELECT city,nickname,w,l from team where conference = \"Western\" order by w desc")
+    west_text = ""
+    for i,x in enumerate(db_cursor.fetchall()):
+      west_text += f"**{i+1}. {x[0]} {x[1]}** Record: **{x[2]}-{x[3]}**\n"
+
+    east_embed = discord.Embed(
+      title = f"Standings for the **2021-2022** NBA Season",
+      color = discord.Colour.orange(),
+      url = "https://www.basketball-reference.com/leagues/NBA_2021_standings.html" )
+    east_embed.add_field(name = "Eastern Conference", value = east_text)
+
+    west_embed = discord.Embed(
+      title = f"Standings for the **2021-2022** NBA Season",
+      color = discord.Colour.orange(),
+      url = "https://www.basketball-reference.com/leagues/NBA_2021_standings.html" )
+    west_embed.add_field(name = "Western Conference", value = west_text)
+
+    
+    #initializing buttons
+    button1 = Button(label = "Eastern", style = discord.ButtonStyle.blurple)
+    button2 = Button(label = "Western", style = discord.ButtonStyle.gray)
+
+    async def east_callback(interaction: discord.Interaction):
+        await interaction.message.edit(embed = east_embed)
+    async def west_callback(interaction: discord.Interaction):
+        await interaction.message.edit(embed = west_embed)
+    
+    button1.callback = east_callback
+    button2.callback = west_callback
+    view = View()
+    view.add_item(button1)
+    view.add_item(button2)
+    await ctx.respond(embed = east_embed, view = view)
 
 @client.slash_command(guild_ids = sl,description = "Search for a player")
 async def search(
