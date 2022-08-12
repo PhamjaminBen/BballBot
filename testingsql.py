@@ -1,19 +1,15 @@
 # "C:\Users\Ben\Documents\GitHub\BballBot\nba_sql.db"
-from sre_constants import SUCCESS
 from basketball_reference_web_scraper import client as bclient
 import sqlite3
 import difflib
+from bs4 import BeautifulSoup
+import requests
+from collections import defaultdict
 connection = sqlite3.connect('nba_sql.db')
 c = connection.cursor()
 c.execute("SELECT player_name from player")
 players = [x[0] for x in c.fetchall()]
 
-def test():
-    c.execute("SELECT city,nickname,w,l from team where conference = \"Western\" order by w desc")
-    data = c.fetchall()
-    print(data)
-    for i,x in enumerate(data):
-      print(f"**{i+1}. {x[0]} {x[1]}** Record: **{x[2]}-{x[3]}")
 
 
 def per_game_calculation():
@@ -64,7 +60,75 @@ def win_loss_calculation():
   c.execute("UPDATE team SET l = (SELECT COUNT(*) FROM Game WHERE team_id_loser = team_id);")
   connection.commit()
 
+def add_advanced():
+  ids = set()
+  while True:
+    raw = input()
+    if raw == "b":
+      break
+    raw = raw.split(",")[1:]
+    if raw[-1] in ids:
+      
+      continue
+    else:
+      ids.add(raw[-1])
+    
+    formatter(raw)
+    raw = ','.join(raw)
+    print()
+    c.execute(f"INSERT INTO player_per_game VALUES ({raw},1949)")
+    connection.commit()
+  
+  c.execute("SELECT * FROM player_per_game limit 20;")
+  print(c.fetchall())
 
+def formatter(data: list):
+  for i in range(len(data)):
+    try:
+      float(data[i])
+    except:
+      data[i] = "\""+data[i]+"\""
+
+
+def test():
+  c.execute("SELECT id from player_per_game")
+  for i,(player,) in enumerate(set(c.fetchall())):
+    if player[-1] == 'b':
+      continue
+    try:
+      print(player,i)
+      url = f"https://www.basketball-reference.com/players/{player[0]}/{player}.html"
+      data = requests.get(url).text
+      soup = BeautifulSoup(data, 'html.parser')
+      tables = soup.find_all('table', id = "per_game")
+      stats = defaultdict(float)
+      for column in tables[0].tfoot.find_all('tr')[0].find_all('td'):
+        try:
+          num = float(column.text)
+          stats[column.get('data-stat')] = num
+        except:
+          pass
+    
+      str1,str2 = '',''
+      for k,v in stats.items():
+        str1 += k+','
+        str2 += str(v)+','
+      str1 = str1[:-1]
+      str2 = str2[:-1]
+      c.execute(f"INSERT INTO player_career_per_game(id,{str1}) VALUES(\"{player}\",{str2})")
+      connection.commit()
+    except Exception as e:
+      print(e.text)
+  # del stats['age']
+  # for x,y in stats.items():
+  #   if x not in ['g','gs']:
+  #     stats[x] = y/len(years)
+  #     if 'pct' in x:
+  #       stats[x] = round(stats[x],3)
+  #     else:
+  #       stats[x] = round(stats[x],1)
+  
+  # print(stats,len(years))
 
 if __name__ == "__main__":
   test()
