@@ -25,10 +25,6 @@ from dataclasses import dataclass
 import sqlite3
 import difflib
 
-# HEADERS = headers = {
-#             'x-rapidapi-host': "nba-stats4.p.rapidapi.com",
-#             'x-rapidapi-key': "3a84732a7fmsh09a7778c123c61ap145571jsn4e31058e61d1"
-#             }
 
 sl = ["704377057529954397","732794738318639125","690009077694332973"]
 logging.basicConfig(level=logging.INFO)
