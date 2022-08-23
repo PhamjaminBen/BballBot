@@ -51,16 +51,16 @@ class PlayerStats(commands.Cog):
       regular_embed.set_thumbnail(url = f"https://www.basketball-reference.com/req/202106291/images/players/{data[0]}.jpg")
       regular_embed.set_footer(text = "Stats provided by basketball-reference.com", icon_url = "https://d2p3bygnnzw9w3.cloudfront.net/req/202201141/logos/bbr-logo.svg")
       regular_embed.add_field(name = f"{year}-{year+1} Stats",
-      value = f"""Games Played: **{data[2]}**
-        Ppg: **{nround(data[3],1)}**
-        Apg: **{nround(data[4],1)}**
-        Rpg: **{nround(data[5],1)}**
-        Spg: **{nround(data[6],1)}**
-        Bpg: **{nround(data[7],1)}**
-        TOpg: **{nround(data[8],1)}**
-        FG: **{nround(data[9]*100,1)}%**
-        3P: **{nround(data[10]*100,1)}%**
-        FT: **{nround(data[11]*100,1)}%**""")
+      value = f"""Games Played: **{data[11]}**
+        Ppg: **{nround(data[2],1)}**
+        Apg: **{nround(data[3],1)}**
+        Rpg: **{nround(data[4],1)}**
+        Spg: **{nround(data[5],1)}**
+        Bpg: **{nround(data[6],1)}**
+        TOpg: **{nround(data[7],1)}**
+        FG: **{nround(data[8]*100,1)}%**
+        3P: **{nround(data[9]*100,1)}%**
+        FT: **{nround(data[10]*100,1)}%**""")
       await ctx.respond(embed=regular_embed)
 
   @commands.slash_command(guild_ids = sl,description = "Shows the stats for a certain player's career'")

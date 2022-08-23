@@ -1,11 +1,14 @@
-# "C:\Users\Ben\Documents\GitHub\BballBot\nba_sql.db"
+# "C:\Users\Ben\Documents\GitHub\BballBot\BballBot\nba_sql.db"
 from basketball_reference_web_scraper import client as bclient
 import sqlite3
 import difflib
 from bs4 import BeautifulSoup
 import requests
 from collections import defaultdict
-connection = sqlite3.connect('nba_sql.db')
+from assets.team_urls import team_abbr_list,team_url_list
+
+
+connection = sqlite3.connect('BballBot/nba_sql.db')
 c = connection.cursor()
 c.execute("SELECT player_name from player")
 players = [x[0] for x in c.fetchall()]
@@ -90,7 +93,7 @@ def formatter(data: list):
       data[i] = "\""+data[i]+"\""
 
 
-def test():
+def add_career_stats():
   c.execute("SELECT id from player_per_game")
   for i,(player,) in enumerate(set(c.fetchall())):
     if player[-1] == 'b':
@@ -119,16 +122,10 @@ def test():
       connection.commit()
     except Exception as e:
       print(e.text)
-  # del stats['age']
-  # for x,y in stats.items():
-  #   if x not in ['g','gs']:
-  #     stats[x] = y/len(years)
-  #     if 'pct' in x:
-  #       stats[x] = round(stats[x],3)
-  #     else:
-  #       stats[x] = round(stats[x],1)
-  
-  # print(stats,len(years))
+
+def update_active_players():
+  for url,abbr in zip(team_abbr_list,team_url_list):
+    print(url,abbr)
 
 if __name__ == "__main__":
-  test()
+  update_active_players()
