@@ -6,7 +6,7 @@ import requests
 
 def add_career_stats():
   db_cursor.execute("SELECT id from player_per_game")
-  for i,(player,) in enumerate(set(c.fetchall())):
+  for i,(player,) in enumerate(set(db_cursor.fetchall())):
     if player[-1] == 'b':
       continue
     try:

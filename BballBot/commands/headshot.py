@@ -1,7 +1,8 @@
 from discord.ext import commands
 import discord
 from BballBot.assets.serverlist import sl
-from BballBot.assets.dbconnection import player_list, db_cursor
+from BballBot.assets.dbconnection import db_cursor
+from BballBot.assets.player_lists import player_list
 import difflib
 
 
