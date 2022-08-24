@@ -5,7 +5,7 @@ from discord.ext import commands
 sl = ["704377057529954397","732794738318639125","690009077694332973"]
 logging.basicConfig(level=logging.INFO)
 
-token = 'OTM2Njg5NTEyNzExNTk4MTIx.GwvpS3.5aIig7TX9lEqQ32-hE5t1wVEQgkMmuu2iTaDE0'
+token = ''
 
 intents = discord.Intents.all()
 intents.members = True
