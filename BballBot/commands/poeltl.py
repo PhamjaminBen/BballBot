@@ -22,6 +22,18 @@ class Poeltl(commands.Cog):
     players_dict[ctx.author.id] = Game()
     await ctx.respond("Poeltl initiated!")
   
+
+  @commands.command()
+  async def poeltl(self,ctx: discord.ApplicationContext):
+    pid = ctx.author.id
+    if pid in players_dict:
+      await ctx.send("Game already in progress, use ``/guess quit`` to quit your previous game")
+      return
+    
+    players_dict[ctx.author.id] = Game()
+    await ctx.send("Poeltl initiated!")
+  
+
   @commands.slash_command(guild_ds = sl, description = "Make a poeltl guess")
   async def guess(self,
     ctx: discord.ApplicationContext,
@@ -46,6 +58,35 @@ class Poeltl(commands.Cog):
     name = result[0]
     guess_result = players_dict[ctx.author.id].guess(names_to_rostered_players[name])
     await ctx.respond(guess_result)
+    if players_dict[ctx.author.id].get_guess() == 9:
+      del players_dict[ctx.author.id]
+  
+
+  @commands.command()
+  async def guess(self,
+    ctx: discord.ApplicationContext,
+    *name: str):
+    name = " ".join(["".join(word) for word in name])
+
+    pid = ctx.author.id
+    if pid not in players_dict:
+      await ctx.send("Game not in progress. Use ``/poeltl`` to start a game")
+      return
+    
+    if name.lower() == "quit":
+      del players_dict[ctx.author.id]
+      await ctx.send("Poeltl terminated")
+      return
+    
+    result = difflib.get_close_matches(name,rostered_names)
+
+    if not result:
+      await ctx.send(f"``{name}`` is not currently rostered")
+      return
+    
+    name = result[0]
+    guess_result = players_dict[ctx.author.id].guess(names_to_rostered_players[name])
+    await ctx.send(guess_result)
     if players_dict[ctx.author.id].get_guess() == 9:
       del players_dict[ctx.author.id]
 

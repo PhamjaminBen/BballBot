@@ -10,11 +10,12 @@ class ShotSelection(commands.Cog):
   def __init__(self,client) -> None:
     self.client = client
 
-  @commands.slash_command(guild_ids = sl,description = "Shows the shot selection for a certain player during the 2021-2022 season")
+  @commands.command()
   async def shotselection(self,
   ctx:  discord.ApplicationCommand,
-  name: discord.Option(str, "Name of the player")
+  *name: tuple
   ) -> None:
+    name = " ".join(["".join(word) for word in name])
     #finding closest match to the player
     results = difflib.get_close_matches(name,player_list)
 
@@ -22,7 +23,7 @@ class ShotSelection(commands.Cog):
     if len(results) == 0:
       e = discord.Embed(colour= discord.Colour.orange())
       e.add_field(name = "Error", value = f" **{name}** not found in database")
-      await ctx.respond(embed = e)
+      await ctx.send(embed = e)
       return
     
     player = results[0]
@@ -32,7 +33,7 @@ class ShotSelection(commands.Cog):
     if not data:
       e = discord.Embed(colour= discord.Colour.orange())
       e.add_field(name = "Error", value = f" **{name}** does not have games in the 2021-2022 season")
-      await ctx.respond(embed = e)
+      await ctx.send(embed = e)
       return
     
     player_id = data[0][0]
@@ -45,16 +46,17 @@ class ShotSelection(commands.Cog):
     )
     e.set_thumbnail(url = f"https://www.basketball-reference.com/req/202106291/images/players/{player_id}.jpg")
 
+    text = "\n**By Shot Type**\n"
     db_cursor.execute(f"select COUNT(*), SUM(shot_made_flag), shot_zone_basic from player NATURAL JOIN shot_chart_detail WHERE player_name = \"{player}\" GROUP BY shot_zone_basic;")
     data = db_cursor.fetchall()
-    e.add_field(name="By Shot Type", value="\n".join([f"**{zone}:** {made}/{amt} fg | {round(made*100/amt,1)}%" for amt,made,zone in data]))
+    text += "\n".join([f"``{zone.ljust(22)}| {str(made).rjust(3)}/{str(amt).ljust(3)} fg | {str(round(made*100/amt,1)).rjust(4)}%``" for amt,made,zone in data])
 
     db_cursor.execute(f"select COUNT(*), SUM(shot_made_flag), shot_zone_range from player NATURAL JOIN shot_chart_detail WHERE player_name = \"{player}\" GROUP BY shot_zone_range;")
     data = db_cursor.fetchall()
-    e.add_field(name="By Shot Distance", value="\n".join([f"**{zone}:** {made}/{amt} fg | {round(made*100/amt,1)}%" for amt,made,zone in data]),inline=True)
+    text += "\n\n**By Shot Distance**\n" + "\n".join([f"``{zone.ljust(22)}| {str(made).rjust(3)}/{str(amt).ljust(3)} fg | {str(round(made*100/amt,1)).rjust(4)}%``" for amt,made,zone in data])
+    e.add_field(name= "Shot selection", value= text)
 
-    await ctx.respond(embed = e)
-
+    await ctx.send(embed = e)
 
 def setup(client):
   client.add_cog(ShotSelection(client))
