@@ -1,7 +1,6 @@
 import difflib
 from discord.ext import commands
 import discord
-from BballBot.assets.serverlist import sl
 from BballBot.assets.player_lists import rostered_players,rostered_names,names_to_rostered_players
 from BballBot.assets.dbconnection import db_cursor
 import random
@@ -12,17 +11,6 @@ class Poeltl(commands.Cog):
   def __init__(self, client):
     self.client = client
 
-  @commands.slash_command(guild_ids = sl,description = "Initiate Poeltl Game")
-  async def poeltl(self,ctx: discord.ApplicationContext):
-    pid = ctx.author.id
-    if pid in players_dict:
-      await ctx.respond("Game already in progress, use ``/guess quit`` to quit your previous game")
-      return
-    
-    players_dict[ctx.author.id] = Game()
-    await ctx.respond("Poeltl initiated!")
-  
-
   @commands.command()
   async def poeltl(self,ctx: discord.ApplicationContext):
     pid = ctx.author.id
@@ -32,35 +20,6 @@ class Poeltl(commands.Cog):
     
     players_dict[ctx.author.id] = Game()
     await ctx.send("Poeltl initiated!")
-  
-
-  @commands.slash_command(guild_ds = sl, description = "Make a poeltl guess")
-  async def guess(self,
-    ctx: discord.ApplicationContext,
-    name: discord.Option(str,"Name of player")):
-
-    pid = ctx.author.id
-    if pid not in players_dict:
-      await ctx.respond("Game not in progress. Use ``/poeltl`` to start a game")
-      return
-    
-    if name.lower() == "quit":
-      del players_dict[ctx.author.id]
-      await ctx.respond("Poeltl terminated")
-      return
-    
-    result = difflib.get_close_matches(name,rostered_names)
-
-    if not result:
-      await ctx.respond(f"``{name}`` is not currently rostered")
-      return
-    
-    name = result[0]
-    guess_result = players_dict[ctx.author.id].guess(names_to_rostered_players[name])
-    await ctx.respond(guess_result)
-    if players_dict[ctx.author.id].get_guess() == 9:
-      del players_dict[ctx.author.id]
-  
 
   @commands.command()
   async def guess(self,

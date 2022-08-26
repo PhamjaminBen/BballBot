@@ -1,5 +1,5 @@
 from BballBot.assets.dbconnection import db_cursor, connection
-from BballBot.assets.team_urls import team_abbr_list,team_url_list
+from BballBot.assets.teams.urls import team_urls
 from bs4 import BeautifulSoup
 import requests
 
@@ -12,7 +12,7 @@ def add_current_players():
       player_name,jersey,pos,height,weight,bithday,age,exp,school,team)""")
   connection.commit()
 
-  for abbr,url in zip(team_abbr_list,team_url_list):
+  for url,abbr in team_urls:
     print(abbr)
     data = requests.get(url).text
     soup = BeautifulSoup(data, 'html.parser')

@@ -461,3 +461,4 @@ venv/Scripts/pythonw.exe
 BballBot/nba_sql.db
 BballBot/nba_sql.db-shm
 BballBot/nba_sql.db-wal
+BballBot/tkn.py
