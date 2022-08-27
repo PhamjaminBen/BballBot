@@ -52,16 +52,16 @@ class PlayerStats(commands.Cog):
       regular_embed.set_thumbnail(url = f"https://www.basketball-reference.com/req/202106291/images/players/{data[0]}.jpg")
       regular_embed.set_footer(text = "Source: basketball-reference.com")
       regular_embed.add_field(name = f"{year}-{year+1} Stats",
-      value = f"""``GP  | {data[11]}``
-        ``Ppg | {nround(data[2],1)}``
-        ``Apg | {nround(data[3],1)}``
-        ``Rpg | {nround(data[4],1)}``
-        ``Spg | {nround(data[5],1)}``
-        ``Bpg | {nround(data[6],1)}``
-        ``TOpg| {nround(data[7],1)}``
-        ``FG  | {nround(data[8]*100,1)}%``
-        ``3P  | {nround(data[9]*100,1)}%``
-        ``FT  | {nround(data[10]*100,1)}%``""")
+      value = f"""`GP  | {data[11]}`
+        `Ppg | {nround(data[2],1)}`
+        `Apg | {nround(data[3],1)}`
+        `Rpg | {nround(data[4],1)}`
+        `Spg | {nround(data[5],1)}`
+        `Bpg | {nround(data[6],1)}`
+        `TOpg| {nround(data[7],1)}`
+        `FG  | {nround(data[8]*100,1)}%`
+        `3P  | {nround(data[9]*100,1)}%`
+        `FT  | {nround(data[10]*100,1)}%`""")
       await ctx.respond(embed=regular_embed)
   
 
@@ -96,16 +96,16 @@ class PlayerStats(commands.Cog):
     regular_embed.set_thumbnail(url = f"https://www.basketball-reference.com/req/202106291/images/players/{data[0]}.jpg")
     regular_embed.set_footer(text = "Source: basketball-reference.com")
     regular_embed.add_field(name = f"Career Averages",
-    value = f"""``GP  | {data[11]}``
-        ``Ppg | {nround(data[2],1)}``
-        ``Apg | {nround(data[3],1)}``
-        ``Rpg | {nround(data[4],1)}``
-        ``Spg | {nround(data[5],1)}``
-        ``Bpg | {nround(data[6],1)}``
-        ``TOpg| {nround(data[7],1)}``
-        ``FG  | {nround(data[8]*100,1)}%``
-        ``3P  | {nround(data[9]*100,1)}%``
-        ``FT  | {nround(data[10]*100,1)}%``""")
+    value = f"""`GP  | {data[11]}`
+        `Ppg | {nround(data[2],1)}`
+        `Apg | {nround(data[3],1)}`
+        `Rpg | {nround(data[4],1)}`
+        `Spg | {nround(data[5],1)}`
+        `Bpg | {nround(data[6],1)}`
+        `TOpg| {nround(data[7],1)}`
+        `FG  | {nround(data[8]*100,1)}%`
+        `3P  | {nround(data[9]*100,1)}%`
+        `FT  | {nround(data[10]*100,1)}%`""")
 
     await ctx.respond(embed=regular_embed)
   
@@ -142,16 +142,16 @@ class PlayerStats(commands.Cog):
     regular_embed.set_thumbnail(url = f"https://www.basketball-reference.com/req/202106291/images/players/{data[0]}.jpg")
     regular_embed.set_footer(text = "Source: basketball-reference.com")
     regular_embed.add_field(name = f"Career Averages",
-    value = f"""``GP  | {data[11]}``
-        ``Ppg | {nround(data[2],1)}``
-        ``Apg | {nround(data[3],1)}``
-        ``Rpg | {nround(data[4],1)}``
-        ``Spg | {nround(data[5],1)}``
-        ``Bpg | {nround(data[6],1)}``
-        ``TOpg| {nround(data[7],1)}``
-        ``FG  | {nround(data[8]*100,1)}%``
-        ``3P  | {nround(data[9]*100,1)}%``
-        ``FT  | {nround(data[10]*100,1)}%``""")
+    value = f"""`GP  | {data[11]}`
+        `Ppg | {nround(data[2],1)}`
+        `Apg | {nround(data[3],1)}`
+        `Rpg | {nround(data[4],1)}`
+        `Spg | {nround(data[5],1)}`
+        `Bpg | {nround(data[6],1)}`
+        `TOpg| {nround(data[7],1)}`
+        `FG  | {nround(data[8]*100,1)}%`
+        `3P  | {nround(data[9]*100,1)}%`
+        `FT  | {nround(data[10]*100,1)}%`""")
 
     await ctx.send(embed=regular_embed)
 

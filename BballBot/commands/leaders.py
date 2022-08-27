@@ -28,13 +28,13 @@ class Leaders(commands.Cog):
     ]
 
     if not year.isdigit():
-      await ctx.send(f"``{year}`` is not a valid year")
+      await ctx.send(f"`{year}` is not a valid year")
       return
     
     year = int(year)
 
     if year < 1949 or year > 2021:
-      ctx.send(f"Leaders not tracked for year ``{year}``")
+      ctx.send(f"Leaders not tracked for year `{year}`")
       return
 
     db_cursor.execute(f"SELECT player_name, pts FROM player_per_game WHERE g >= 58 AND year = {year} ORDER BY pts DESC LIMIT 20;")

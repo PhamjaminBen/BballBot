@@ -15,7 +15,7 @@ class Poeltl(commands.Cog):
   async def poeltl(self,ctx: discord.ApplicationContext):
     pid = ctx.author.id
     if pid in players_dict:
-      await ctx.send("Game already in progress, use ``/guess quit`` to quit your previous game")
+      await ctx.send("Game already in progress, use `/guess quit` to quit your previous game")
       return
     
     players_dict[ctx.author.id] = Game()
@@ -29,7 +29,7 @@ class Poeltl(commands.Cog):
 
     pid = ctx.author.id
     if pid not in players_dict:
-      await ctx.send("Game not in progress. Use ``/poeltl`` to start a game")
+      await ctx.send("Game not in progress. Use `/poeltl` to start a game")
       return
     
     if name.lower() == "quit":
@@ -40,7 +40,7 @@ class Poeltl(commands.Cog):
     result = difflib.get_close_matches(name,rostered_names)
 
     if not result:
-      await ctx.send(f"``{name}`` is not currently rostered")
+      await ctx.send(f"`{name}` is not currently rostered")
       return
     
     name = result[0]
@@ -58,7 +58,7 @@ class Game():
       self._target = random.choice(rostered_players)
 
     self._guess = 1
-    self._string = f"``{'Name'.center(25)}      Team    Conf     Div     Pos    Ht         Age      #       ``\n"
+    self._string = f"`{'Name'.center(25)}      Team    Conf     Div     Pos    Ht         Age      #       `\n"
     db_cursor.execute(f"SELECT team FROM prev_teams where name = \"{self._target[0]}\";")
     self._prev_teams = {x[0] for x in db_cursor.fetchall()}
 
@@ -67,7 +67,7 @@ class Game():
 
   def guess(self, guess: tuple) -> str:
     guess_result = self._compare_players(guess)
-    self._string += f"``{self._guess})" + guess_result[1] + "\n"
+    self._string += f"`{self._guess})" + guess_result[1] + "\n"
     self._guess += 1
 
     if guess_result[0]:
@@ -75,8 +75,8 @@ class Game():
       self._guess = 9
 
     elif self._guess == 9:
-      self._string += "``Sorry, the correct answer is:``\n"
-      self._string += f"``  {self._compare_players(self._target)[1]}"
+      self._string += "`Sorry, the correct answer is:`\n"
+      self._string += f"`  {self._compare_players(self._target)[1]}"
     
     return self._string
 
@@ -85,14 +85,14 @@ class Game():
   def _compare_players(self, guess: tuple) -> tuple:
     correct = False
 
-    retstr = f"{guess[0].center(25)}``"
+    retstr = f"{guess[0].center(25)}`"
     if self._target[0] == guess[0]: 
       retstr += "🟩"
       correct = True
     else: 
       retstr += "⬜"
 
-    retstr += f" ``{guess[1]} ``"
+    retstr += f" `{guess[1]} `"
     if self._target[1] == guess[1]:
       retstr += "🟩"
     elif guess[1] in self._prev_teams:
@@ -100,20 +100,20 @@ class Game():
     else:
       retstr += "⬜"
 
-    retstr += f" ``{guess[2][:4]}``"
+    retstr += f" `{guess[2][:4]}`"
     retstr += "🟩" if self._target[2] == guess[2] else "⬜"
 
-    retstr += f" ``{guess[3].center(4)}``"
+    retstr += f" `{guess[3].center(4)}`"
     retstr += "🟩" if self._target[3] == guess[3] else "⬜"
 
-    retstr += f" ``{guess[4].center(3)}``"
+    retstr += f" `{guess[4].center(3)}`"
     if guess[4] == "-": retstr += "⬜"
     else:
       if guess[4] == self._target[4]: retstr += "🟩"
       elif set(guess[4].split('-')).intersection(set(self._target[4].split('-'))) != set(): retstr += "🟨"
       else: retstr += "⬜"
 
-    retstr += f" ``{guess[5].center(4)}``"
+    retstr += f" `{guess[5].center(4)}`"
     if guess[5] == "-": retstr += "⬜⏺️"
     else:
       gh,th = self._raw_height(guess[5]), self._raw_height(self._target[5])
@@ -123,7 +123,7 @@ class Game():
         else: retstr += "⬜"
         retstr += "⬆️" if gh < th else "⬇️"
     
-    retstr += f" ``{guess[6]}``"
+    retstr += f" `{guess[6]}`"
     if guess[6] == "-": retstr += "⬜⏺️"
     else:
       ga,ta = int(guess[6]),int(self._target[6])
@@ -133,7 +133,7 @@ class Game():
         else: retstr += "⬜"
         retstr += "⬆️" if ga < ta else "⬇️"
     
-    retstr += f" ``{guess[7].ljust(2)}``"
+    retstr += f" `{guess[7].ljust(2)}`"
     if guess[7] == "-": retstr += "⬜⏺️"
     else:
       gj,tj = int(guess[7]),int(self._target[7])

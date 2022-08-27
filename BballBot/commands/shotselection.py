@@ -48,11 +48,11 @@ class ShotSelection(commands.Cog):
     text = "\n**By Shot Type**\n"
     db_cursor.execute(f"select COUNT(*), SUM(shot_made_flag), shot_zone_basic from player NATURAL JOIN shot_chart_detail WHERE player_name = \"{player}\" GROUP BY shot_zone_basic;")
     data = db_cursor.fetchall()
-    text += "\n".join([f"``{zone.ljust(22)}| {str(made).rjust(3)}/{str(amt).ljust(3)} fg | {str(round(made*100/amt,1)).rjust(4)}%``" for amt,made,zone in data])
+    text += "\n".join([f"`{zone.ljust(22)}| {str(made).rjust(3)}/{str(amt).ljust(3)} fg | {str(round(made*100/amt,1)).rjust(4)}%`" for amt,made,zone in data])
 
     db_cursor.execute(f"select COUNT(*), SUM(shot_made_flag), shot_zone_range from player NATURAL JOIN shot_chart_detail WHERE player_name = \"{player}\" GROUP BY shot_zone_range;")
     data = db_cursor.fetchall()
-    text += "\n\n**By Shot Distance**\n" + "\n".join([f"``{zone.ljust(22)}| {str(made).rjust(3)}/{str(amt).ljust(3)} fg | {str(round(made*100/amt,1)).rjust(4)}%``" for amt,made,zone in data])
+    text += "\n\n**By Shot Distance**\n" + "\n".join([f"`{zone.ljust(22)}| {str(made).rjust(3)}/{str(amt).ljust(3)} fg | {str(round(made*100/amt,1)).rjust(4)}%`" for amt,made,zone in data])
     e.add_field(name= "Shot selection", value= text)
 
     await ctx.send(embed = e)

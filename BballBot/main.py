@@ -8,7 +8,8 @@ logging.basicConfig(level=logging.INFO)
 
 intents = discord.Intents.all()
 intents.members = True
-client = commands.Bot(command_prefix="-", intents = intents)
+client = commands.Bot(command_prefix="-", intents = intents, help_command= None)
+
 
 client.load_extension("commands.poeltl")
 client.load_extension("commands.player_stats")
@@ -17,6 +18,7 @@ client.load_extension("commands.shotselection")
 client.load_extension("commands.standings")
 client.load_extension("commands.leaders")
 client.load_extension("commands.roster")
+client.load_extension("commands.help")
 
 @client.event
 async def on_ready():

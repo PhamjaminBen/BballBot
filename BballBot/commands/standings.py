@@ -13,12 +13,12 @@ class Standings(commands.Cog):
     db_cursor.execute("SELECT abbreviation,w,l from team where conference = \"Eastern\" order by w desc")
     east_text = ""
     for i,x in enumerate(db_cursor.fetchall()):
-      east_text += f"``{str(i+1).zfill(2)}. {str(x[0]).zfill(2)} | Record: {str(x[1]).zfill(2)}-{str(x[2]).zfill(2)}``\n"
+      east_text += f"`{str(i+1).zfill(2)}. {str(x[0]).zfill(2)} | Record: {str(x[1]).zfill(2)}-{str(x[2]).zfill(2)}`\n"
 
     db_cursor.execute("SELECT abbreviation,w,l from team where conference = \"Western\" order by w desc")
     west_text = ""
     for i,x in enumerate(db_cursor.fetchall()):
-      west_text += f"``{str(i+1).zfill(2)}. {str(x[0]).zfill(2)} | Record: {str(x[1]).zfill(2)}-{str(x[2]).zfill(2)}``\n"
+      west_text += f"`{str(i+1).zfill(2)}. {str(x[0]).zfill(2)} | Record: {str(x[1]).zfill(2)}-{str(x[2]).zfill(2)}`\n"
 
     east_embed = discord.Embed(
       title = f"Standings for the **2021-2022** NBA Season",
