@@ -1,11 +1,14 @@
 
+#pycache files
 *.pyc
-*.pyc
+
+#local packaging files
 BballBot.egg-info/PKG-INFO
 BballBot.egg-info/dependency_links.txt
 BballBot.egg-info/top_level.txt
 BballBot.egg-info/SOURCES.txt
-*.pyc
+
+#virtual environment files
 venv/Lib/site-packages/easy_install.py
 venv/Lib/site-packages/pip-19.2.3.dist-info/entry_points.txt
 venv/Lib/site-packages/pip-19.2.3.dist-info/INSTALLER
@@ -458,7 +461,11 @@ venv/Scripts/pip3.8.exe
 venv/Scripts/pip3.exe
 venv/Scripts/python.exe
 venv/Scripts/pythonw.exe
+
+#Large SQL file that can't be loaded
 BballBot/nba_sql.db
 BballBot/nba_sql.db-shm
 BballBot/nba_sql.db-wal
+
+#file containing bot token
 BballBot/tkn.py
