@@ -469,3 +469,6 @@ BballBot/nba_sql.db-wal
 
 #file containing bot token
 BballBot/tkn.py
+
+#package setup module
+setup.py
