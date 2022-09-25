@@ -1,4 +1,5 @@
-# BballBot
+![BballBot Logo](https://cdn.discordapp.com/attachments/844406964212858903/1023493998775648256/bbalbotlogo_1.png)
+
 Stat-focused Discord Bot for information about the NBA.
 
 Features include:
